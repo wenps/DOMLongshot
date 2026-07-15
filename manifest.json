@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "DOM Longshot",
+  "version": "0.1.0",
+  "description": "Select a DOM element and export its full content as a PNG image.",
+  "permissions": ["activeTab", "scripting", "webNavigation"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "DOM Longshot",
+    "default_popup": "popup.html"
+  }
+}
