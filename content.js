@@ -355,7 +355,13 @@
       notice.set("正在导出 PNG");
       const blob = await canvasToBlob(canvas);
       downloadBlob(blob, createFilename(target));
-      notice.success("长图已生成");
+      try {
+        await copyBlobToClipboard(blob);
+        notice.success("长图已下载并复制到剪贴板");
+      } catch (clipboardError) {
+        console.warn("DOM Longshot clipboard write failed", clipboardError);
+        notice.warning("PNG 已下载，但无法复制到剪贴板");
+      }
     } catch (error) {
       console.error("DOM Longshot capture failed", error);
       notice.error(error.message || "截图失败，请重试。 ");
@@ -748,6 +754,15 @@
     window.setTimeout(() => URL.revokeObjectURL(url), 30_000);
   }
 
+  async function copyBlobToClipboard(blob) {
+    if (!navigator.clipboard?.write || typeof ClipboardItem === "undefined") {
+      throw new Error("Clipboard API is unavailable");
+    }
+    await navigator.clipboard.write([
+      new ClipboardItem({ "image/png": blob })
+    ]);
+  }
+
   function createFilename(target) {
     const identity = target.id || target.tagName.toLowerCase();
     const safeIdentity = identity.replace(/[^a-zA-Z0-9_-]+/g, "-").slice(0, 40);
@@ -814,6 +829,11 @@
         text.textContent = value;
         element.style.background = "rgba(167,57,31,0.96)";
         dot.style.background = "#ffc0ae";
+      },
+      warning(value) {
+        text.textContent = value;
+        element.style.background = "rgba(126,83,18,0.96)";
+        dot.style.background = "#ffd88a";
       },
       hide() {
         element.style.visibility = "hidden";

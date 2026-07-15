@@ -3,7 +3,7 @@
   "name": "DOM Longshot",
   "version": "0.1.0",
   "description": "Select a DOM element and export its full content as a PNG image.",
-  "permissions": ["activeTab", "scripting", "webNavigation"],
+  "permissions": ["activeTab", "clipboardWrite", "scripting", "webNavigation"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
